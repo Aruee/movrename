@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace movrename
 {
@@ -13,7 +15,7 @@ namespace movrename
 			bool dryrun = false;
 			bool verbose = false;
 			int maxDiff = 5;
-			string path = "";
+			List<string> path = new List<string> ();
 			for (int i = 0; i < args.Length; i++) {
 				if (args [i] == "-n") {
 					dryrun = true;
@@ -22,7 +24,7 @@ namespace movrename
 					verbose = true;
 					Console.Write ("Verbose output; ");
 				} else if (args[i].StartsWith("-p")) {
-					path = args [i].Substring (2);
+					path.Add(args [i].Substring (2));
 					Console.Write ("Location " + path + "; ");
 				} else if (args[i].StartsWith("-m")) {
 					try {
@@ -35,12 +37,16 @@ namespace movrename
 			}
 			Console.WriteLine ();
 
-			if (path == "") {
+			if (path.Count == 0) {
 				Console.WriteLine ("Please provide a path using the -p parameter");
 				return;
 			}
 
-			string[] filePaths = Directory.GetFiles(path, "MVI*.MOV");
+			List<string> filePaths = new List<string> ();
+			foreach (var p in path) {
+				string[] paths = Directory.GetFiles(p, "MVI*.MOV");
+				filePaths.AddRange (paths);
+			}
 
 			foreach (var file in filePaths) {
 				if (verbose) {
@@ -61,8 +67,8 @@ namespace movrename
 					string idA = a.ToString ("D4");
 					string idB = b.ToString ("D4");
 
-					string[] filePathsA = Directory.GetFiles (path, "IMG_" + idA + ".JPG");
-					string[] filePathsB = Directory.GetFiles (path, "IMG_" + idB + ".JPG");
+					string[] filePathsA = path.SelectMany (p => Directory.GetFiles(p, "IMG_" + idA + ".JPG")).ToArray();// Directory.GetFiles (path, "IMG_" + idA + ".JPG");
+					string[] filePathsB = path.SelectMany (p => Directory.GetFiles(p, "IMG_" + idB + ".JPG")).ToArray();
 					DateTime da = new DateTime ();
 					DateTime db = new DateTime ();
 					bool useA = false;
