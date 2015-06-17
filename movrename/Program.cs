@@ -11,6 +11,19 @@ namespace movrename
 	{
 		public static void Main (string[] args)
 		{
+
+			if (args.Length == 0) {
+				Console.WriteLine ("movrename");
+				Console.WriteLine ("Renames Canon DSLR movie files to contain the data they were taken on, based on photos that were taken before or after the video");
+				Console.WriteLine ("Options are:");
+				Console.WriteLine (" -v\t\tverbose output (default: off)");
+				Console.WriteLine (" -n\t\tno changes / dry run (your files won't be altered) (default: off");
+				Console.WriteLine (" -p\t\tthe path to look for files. This can be specified an arbitrary amount of times");
+				Console.WriteLine (" -m\t\tthe maximum difference between the photo's and the movie's ID");
+				Console.WriteLine ("");
+				Console.WriteLine ("Please provide the proper options and run again.");
+				return;
+			}
 			Console.Write ("movrename settings: ");
 			bool dryrun = false;
 			bool verbose = false;
