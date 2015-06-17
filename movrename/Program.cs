@@ -67,6 +67,7 @@ namespace movrename
 				}
 				string id = file.Substring (file.Length - 12).Replace ("MVI_", "").Replace (".MOV", "");
 				int originalID = int.Parse (id);
+				bool success = false;
 				for (int diff = 0; diff < maxDiff; diff++) {
 					int a = originalID + diff;
 					int b = originalID - diff;
@@ -130,7 +131,8 @@ namespace movrename
 					}
 
 					if (perform) {
-						string targetFilename = file.Replace ("MVI_", toUse.Year.ToString("D4") + "-" + toUse.Month.ToString("D2") + "-" + toUse.Day.ToString("D2") + "_MVI_");
+						success = true;
+						string targetFilename = file.Replace ("MVI_", toUse.Year.ToString ("D4") + "-" + toUse.Month.ToString ("D2") + "-" + toUse.Day.ToString ("D2") + "_MVI_");
 						if (!dryrun) {
 							File.Move (file, targetFilename);
 						}
@@ -138,6 +140,11 @@ namespace movrename
 							Console.WriteLine (file + " --> " + targetFilename);
 						}
 						break;
+					}
+				}
+				if (!success) {	
+					if (verbose) {
+						Console.WriteLine ("Could not find appropriate match for " + file);
 					}
 				}
 			}
