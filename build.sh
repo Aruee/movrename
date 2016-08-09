@@ -1,0 +1,1 @@
+xbuild ./movrename/movrename.csproj
