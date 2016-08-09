@@ -27,6 +27,7 @@ namespace movrename
 			Console.Write ("movrename settings: ");
 			bool dryrun = false;
 			bool verbose = false;
+			bool deleteExisting = false;
 			int maxDiff = 5;
 			List<string> path = new List<string> ();
 			for (int i = 0; i < args.Length; i++) {
@@ -36,19 +37,22 @@ namespace movrename
 				} else if (args [i] == "-v") {
 					verbose = true;
 					Console.Write ("Verbose output; ");
-				} else if (args[i].StartsWith("-p")) {
-					path.Add(args [i].Substring (2));
-					Console.Write ("Locations: ");
-					foreach (var p in path) {
-						Console.Write(p + "; ");	
-					}
-				} else if (args[i].StartsWith("-m")) {
+				} else if (args [i].StartsWith ("-p")) {
+					path.Add (args [i].Substring (2));
+					Console.Write ("Location: " + args [i].Substring (2));
+				} else if (args [i].StartsWith ("-m")) {
 					try {
-						maxDiff = int.Parse(args[i].Substring(2));
-						Console.Write("Maximum index difference set to " + maxDiff + "; ");
+						maxDiff = int.Parse (args [i].Substring (2));
+						Console.Write ("Maximum index difference set to " + maxDiff + "; ");
 					} catch (Exception e) {
 						Console.Write ("Maximum difference to target image provided but unparseable, sticking with default " + maxDiff + "; ");
 					}
+				} else if (args[i].StartsWith("-d")) {
+					deleteExisting = true;
+					Console.WriteLine ("Delete if result already exists");
+				} else {
+					path.Add (args [i]);
+					Console.Write ("Location: " + args [i]);
 				}
 			}
 			Console.WriteLine ();
@@ -141,6 +145,14 @@ namespace movrename
 								File.Move (file, targetFilename);
 							} catch (Exception e) {
 								Console.WriteLine ("Error renaming " + file + " to " + targetFilename + ": " + e.Message);
+								if (File.Exists (targetFilename) && deleteExisting) {
+									Console.WriteLine ("Deleting original file");
+									try {
+										File.Delete (file);
+									} catch(Exception ed) {
+										Console.WriteLine("Unable to delete: " + ed.Message);
+									}
+								}
 							}
 						}
 						if (verbose) {
