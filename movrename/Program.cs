@@ -38,7 +38,10 @@ namespace movrename
 					Console.Write ("Verbose output; ");
 				} else if (args[i].StartsWith("-p")) {
 					path.Add(args [i].Substring (2));
-					Console.Write ("Location " + path + "; ");
+					Console.Write ("Locations: ");
+					foreach (var p in path) {
+						Console.Write(p + "; ");	
+					}
 				} else if (args[i].StartsWith("-m")) {
 					try {
 						maxDiff = int.Parse(args[i].Substring(2));
@@ -134,7 +137,11 @@ namespace movrename
 						success = true;
 						string targetFilename = file.Replace ("MVI_", toUse.Year.ToString ("D4") + "-" + toUse.Month.ToString ("D2") + "-" + toUse.Day.ToString ("D2") + "_MVI_");
 						if (!dryrun) {
-							File.Move (file, targetFilename);
+							try {
+								File.Move (file, targetFilename);
+							} catch (Exception e) {
+								Console.WriteLine ("Error renaming " + file + " to " + targetFilename + ": " + e.Message);
+							}
 						}
 						if (verbose) {
 							Console.WriteLine (file + " --> " + targetFilename);
