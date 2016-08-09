@@ -102,7 +102,7 @@ namespace movrename
 						}
 					}
 					if (filePathsB.Length == 1) {
-						da = GetDate (new FileInfo (filePathsB [0]));
+						db = GetDate (new FileInfo (filePathsB [0]));
 						if (db != baseline) {
 							useB = true;
 							if (verbose) {
